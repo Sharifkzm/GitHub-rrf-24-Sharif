@@ -8,22 +8,48 @@
 # library(stringr)
 # library(labelled)
 
+### Collating useful new-ish commands ----
+
+# set_variable_labels
+# 
+
+
 ### Loading data ----
 
 # Load the dataset
-data_path <- "ADD-YOUR-PATH"
+data_path <- "C:/Users/wb631168/Downloads/DataWork/DataWork/Data/"
 data      <- read_dta(file.path(data_path, "Raw/TZA_CCT_baseline.dta"))
+
+(data)
+
 
 ### Remove duplicates based on hhid
 data_dedup <- data %>%
-    ......
+    distinct(hhid, .keep_all = TRUE) #
+
 
 ### Household (HH) level data ----
 
 #### Tidying data for HH level
 data_tidy_hh <- data_dedup %>%
-    ......
+    select(vid, hhid, enid, 
+           floor:n_elder,
+           food_cons:submissionday) %>% 
+    mutate(submissiondate = as.Date(submissionday, 
+                                    format = "%Y-%m-%d %H:%M:%S")) %>% 
+    mutate(ar_unit = as.factor(ar_farm_unit)) %>% 
+    mutate(ar_unit = na_if(ar_unit, "")) %>% 
+    mutate(crop_other = str_to_title(crop_other)) %>%  
+    # str_to_title capitalises first letter - might be helpful! 
+    mutate(crop = case_when(
+        str_detect(crop_other, "Coconut") ~ 40,
+        str_detect(crop_other, "Sesame") ~ 41
+    ))
 
+    
+
+    
+    
 ### Data cleaning for Household-member (HH-member) level
 data_clean_hh <- data_tidy_hh %>%
     # Convert submissionday to date
@@ -73,9 +99,9 @@ secondary_data <- read.csv(file.path(data_path, "Raw/TZA_amenity.csv"))
 
 # Tidying data
 secondary_data <- secondary_data %>%
-    pivot_wider(names_from = ......,
-                values_from = ......,
-                names_prefix = ......)
+    pivot_wider(names_from = "amenity",
+                values_from = "n",
+                names_prefix = "region")
 
 # Save the final tidy secondary data
 write_dta(secondary_data, file.path(data_path, "Intermediate/TZA_amenity_tidy.dta"))

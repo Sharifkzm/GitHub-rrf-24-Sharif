@@ -82,6 +82,8 @@ data_tidy_mem <- data_dedup %>%
                  names_to = ......,
                  names_pattern = "(.*)_(\\d+)")  # Capture the variable and the suffix
 
+?pivot_longer
+
 ### Data cleaning for HH-member level
 data_clean_mem <- data_tidy_mem %>%
     # Drop rows where gender is missing (NA)
@@ -98,10 +100,11 @@ write_dta(data_clean_mem, file.path(data_path, "Intermediate/TZA_CCT_HH_mem.dta"
 secondary_data <- read.csv(file.path(data_path, "Raw/TZA_amenity.csv"))
 
 # Tidying data
-secondary_data <- secondary_data %>%
+secondary_data_pivot <- secondary_data %>%
     pivot_wider(names_from = "amenity",
                 values_from = "n",
-                names_prefix = "region")
+                names_prefix = "n_")
+
 
 # Save the final tidy secondary data
-write_dta(secondary_data, file.path(data_path, "Intermediate/TZA_amenity_tidy.dta"))
+write_dta(secondary_data_pivot, file.path(data_path, "Intermediate/TZA_amenity_tidy.dta"))

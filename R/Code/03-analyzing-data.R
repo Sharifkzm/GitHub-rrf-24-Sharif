@@ -2,17 +2,19 @@
 # 03. Data Analysis
 
 # Libraries
-# library(haven)
-# library(dplyr)
-# library(modelsummary)
-# library(stargazer)
-# library(ggplot2)
-# library(tidyr)
+library(haven)
+library(dplyr)
+library(modelsummary)
+library(stargazer)
+library(ggplot2)
+library(tidyr)
+library(labelled)
 
 # Load data 
 #household level data
-data_path <- "ADD-YOUR-PATH"
+data_path <- "C:/Users/wb631168/Downloads/DataWork/DataWork/Data"
 hh_data   <- read_dta(file.path(data_path, "Final/TZA_CCT_analysis.dta"))
+
 
 # secondary data 
 secondary_data <- read_dta(file.path(data_path, "Final/TZA_amenity_analysis.dta")) %>%
@@ -20,39 +22,59 @@ secondary_data <- read_dta(file.path(data_path, "Final/TZA_amenity_analysis.dta"
 
 # Summary statistics ----
 
+
+
 # Create summary statistics by district and export to CSV
 summary_table <- datasummary(
-    ...... ~ ...... * (Mean + SD), 
+    hh_size + n_child_5 + n_elder + read + sick + female_head + 
+    livestock_now + area_acre_w + drought_flood + crop_damage ~ 
+    to_factor(district) * (Mean + SD), 
     data = hh_data,
     title = "Summary Statistics by District",
     output = file.path("Outputs", "summary_table.csv")  # Change to CSV
 )
 
+??to_factor
+
+?datasummary
+
+
 
 # Balance table ----
+# Making new variables that are well-labelled
+
+balance_data <- hh_data %>% 
+    select("hh_size", "n_child_5", "n_elder", "read", "sick", "female_head",
+           "livestock_now", "area_acre_w", "drought_flood", "crop_damage", "treatment")
+
 balance_table <- datasummary_balance(
-    ...... ~ ......,
-    data = hh_data,
+    sumvars ~ treatment, # sumvars was a vector of all variables to not type them
+    data = balance_data,
     stars = TRUE,
     title = "Balance by Treatment Status",
     note = "Includes HHS with observations for baseline and endline",
     output = file.path("Outputs", "balance_table.csv")  # Change to CSV
 )
 
+?datasummary_balance
+
 # Regressions ----
 
 # Model 1: Food consumption regressed on treatment
-model1 <- lm(......, data = hh_data)
+model1 <- lm(food_cons_usd_w ~ treatment, data = hh_data)
+
+?lm
 
 # Model 2: Add controls (crop_damage, drought_flood)
-model2 <- lm(......, data = hh_data)
+model2 <- lm(food_cons_usd_w ~ treatment + crop_damage + drought_flood, data = hh_data)
 
 # Model 3: Add FE by district
-model3 <- lm(......, data = hh_data)
+model3 <- lm(food_cons_usd_w ~ treatment + 
+                 crop_damage + drought_flood + district -1, data = hh_data)
 
 # Create regression table using stargazer
 stargazer(
-    ......,
+    model1, model2, model3,
     title = "Food Consumption Effects",
     keep = c("treatment", "crop_damage", "drought_flood"),
     covariate.labels = c("Treatment",

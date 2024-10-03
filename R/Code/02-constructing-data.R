@@ -139,6 +139,10 @@ hhmem_data_collapse <- mem_data %>%
 # Calculate the total number of medical facilities by summing relevant columns.
 # Apply appropriate labels to the new variables created.
 
+secondary_data <- secondary_data %>%
+    mutate(n_medical = rowSums(select(., n_hospital, n_clinic),
+                               na.rm = TRUE))
+
 
 
 # Exercise 5: Merge HH and HH-member data ----

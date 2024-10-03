@@ -1,7 +1,5 @@
 # Reproducible Research Fundamentals 2024 - R
 
-*Testy test test*
-
 Welcome to the **Reproducible Research Fundamentals 2024** training repository. This repository will guide you through all the exercises across the following stages:
 
 - **0. GitHub Workflow**: Gain essential GitHub skills, including how to create branches, commit changes, and open pull requests.
@@ -14,3 +12,16 @@ Feel free to update this README as you progress through the sessions and customi
 
 Remember this is what you will share with your peer at the end of the training for review so this needs to be updated before sharing. 
 
+## Sharif README for Nicolas
+
+- **4. Reproducibility Package**: Package all work into a reproducible format for sharing and validation.
+**Steps to run the code:**
+1. Open the .Rproj
+2. From the .Rproj open the main.R
+3. You need to recover the environment by running `renv::restore()` and follow the prompts that will appear on your console
+4. Change the data_path on line 30 in the main.R file
+5. Run main.R
+
+*Please note: the data and code files are imported directly from the DIME repo to avoid errors in running to practice reproducibility packaging.*
+
+This will create all necessary outputs. 

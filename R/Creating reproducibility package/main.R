@@ -27,7 +27,7 @@ library(RColorBrewer) # color palettes
 # this is the second root of the project, the first root is the code whose directory 
 # is already being handled by the rstudio project.
 
-data_path <- "C:/Users/wb631168/Documents/GitHub/GitHub-rrf-24-Sharif/R/Creating reproducibility package/Data"
+data_path <- "C:/Users/wb631168/Downloads/DataWork/DataWork/Data"
 
 # Please note that the data_path has been adjusted to a fresh and clean set
 # from the DIME repository - to avoid errors in running the code due to 
